@@ -1,0 +1,17 @@
+2023/09/20 11:05:03 log.go:34: Log initialization successful
+2023/09/20 11:05:03 viper.go:26: Configuration read successful
+2023/09/20 11:05:03 mysql.go:37: Mysql connection successful
+2023/09/20 11:05:03 main.go:19: Server running...
+2023/09/20 11:50:39 log.go:34: Log initialization successful
+2023/09/20 11:50:39 viper.go:26: Configuration read successful
+2023/09/20 11:50:39 mysql.go:37: Mysql connection successful
+2023/09/20 11:50:39 main.go:20: Server running...
+2023/09/20 11:52:23 ws.go:112: write tcp [::1]:5912->[::1]:4792: wsasend: An existing connection was forcibly closed by the remote host.
+2023/09/20 12:15:06 log.go:34: Log initialization successful
+2023/09/20 12:15:06 viper.go:26: Configuration read successful
+2023/09/20 12:15:06 mysql.go:37: Mysql connection successful
+2023/09/20 12:15:06 main.go:20: Server running...
+2023/09/20 12:26:14 log.go:34: Log initialization successful
+2023/09/20 12:26:14 viper.go:26: Configuration read successful
+2023/09/20 12:26:14 mysql.go:37: Mysql connection successful
+2023/09/20 12:26:14 main.go:20: Server running...
