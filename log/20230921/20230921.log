@@ -103,3 +103,11 @@
 2023/09/21 16:35:54 viper.go:26: Configuration read successful
 2023/09/21 16:35:55 mysql.go:37: Mysql connection successful
 2023/09/21 16:35:55 main.go:22: Server running...
+2023/09/21 17:19:57 log.go:34: Log initialization successful
+2023/09/21 17:19:57 viper.go:26: Configuration read successful
+2023/09/21 17:19:57 mysql.go:37: Mysql connection successful
+2023/09/21 17:19:57 main.go:22: Server running...
+2023/09/21 17:22:56 log.go:34: Log initialization successful
+2023/09/21 17:22:56 viper.go:26: Configuration read successful
+2023/09/21 17:22:56 mysql.go:37: Mysql connection successful
+2023/09/21 17:22:56 main.go:22: Server running...

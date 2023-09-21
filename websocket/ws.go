@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -33,6 +34,10 @@ func userAuth(c *websocket.Conn) (u *user.Info, err error) {
 		return
 	}
 	go privateBroadcast(u)
+	if _, ok := users[u.Name]; ok {
+		err = errors.New("the user is logged in")
+		return
+	}
 	if err = global.Validator.Struct(u); err != nil {
 		return
 	}
@@ -168,7 +173,7 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 func userLeave(u *user.Info) (err error) {
 	delete(users, u.Name)
 	var leaveMess []byte
-	leaveMess, err = systemMessage([]byte(u.Name + " leaves the chat room"))
+	leaveMess, err = systemMessage([]byte(u.Name + " leaves the chatroom"))
 	if err != nil {
 		return
 	}
