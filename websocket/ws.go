@@ -18,9 +18,8 @@ var upgrader = websocket.Upgrader{
 }
 
 var (
-	users       = make(map[string]*websocket.Conn)
+	users       = make(map[string]*user.Info)
 	messageChan = make(chan []byte, 8)
-	privateChan = make(chan *user.PrivateMessage, 8)
 )
 
 func auth(c *websocket.Conn) (u *user.Info, err error) {
@@ -29,23 +28,24 @@ func auth(c *websocket.Conn) (u *user.Info, err error) {
 	if err != nil {
 		return
 	}
-	if err = json.Unmarshal(userJSON, u); err != nil {
+	if err = user.UnmarshalUser(userJSON, u, c); err != nil {
 		return
 	}
+	go privateBroadcast(u)
 	if err = global.Validator.Struct(u); err != nil {
 		return
 	}
 	if err = dao.UserAuth(u); err != nil {
 		return
 	}
-	if err = authSuccess(u, c); err != nil {
+	if err = authSuccess(u); err != nil {
 		return
 	}
 
 	return
 }
 
-func authSuccess(u *user.Info, c *websocket.Conn) (err error) {
+func authSuccess(u *user.Info) (err error) {
 	loginMess, err := systemMessage([]byte("Login successful"))
 	if err != nil {
 		return
@@ -55,21 +55,15 @@ func authSuccess(u *user.Info, c *websocket.Conn) (err error) {
 		return
 	}
 	messageChan <- joinMess
-	privateChan <- &user.PrivateMessage{
-		Content: loginMess,
-		Conn:    c,
-	}
-	users[u.Name] = c
+	u.Channel <- loginMess
+	users[u.Name] = u
 
 	ul := usersList()
 	listMess, err := systemMessage(ul)
 	if err != nil {
 		return
 	}
-	privateChan <- &user.PrivateMessage{
-		Content: listMess,
-		Conn:    c,
-	}
+	u.Channel <- listMess
 
 	return
 }
@@ -109,28 +103,34 @@ func generateMessage(owner string, content []byte) (messJSON []byte, err error) 
 	return
 }
 
-func writeErrMessage(conn *websocket.Conn, err error) {
+func writeErrMessage(channel chan []byte, err error) {
 	errMess, err := systemMessage([]byte(err.Error()))
 	if err != nil {
 		global.Log.Println(errMess)
 	}
-	privateChan <- &user.PrivateMessage{
-		Content: errMess,
-		Conn:    conn,
-	}
+	channel <- errMess
 
 	return
+}
+
+func privateBroadcast(u *user.Info) {
+	for {
+		select {
+		case message := <-u.Channel:
+			if err := u.Conn.WriteMessage(websocket.TextMessage, message); err != nil {
+				return
+			}
+		}
+	}
 }
 
 func Broadcast() {
 	for {
 		select {
 		case message := <-messageChan:
-			for _, conn := range users {
-				conn.WriteMessage(websocket.TextMessage, message)
+			for _, u := range users {
+				u.Channel <- message
 			}
-		case privateMessage := <-privateChan:
-			privateMessage.Conn.WriteMessage(websocket.TextMessage, privateMessage.Content)
 		}
 	}
 }
@@ -141,7 +141,10 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 		return
 	}
-	defer conn.Close()
+	defer func() {
+		time.Sleep(time.Second)
+		conn.Close()
+	}()
 
 	u, err := auth(conn)
 	if err != nil {
@@ -150,10 +153,7 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			global.Log.Println(errMess)
 		}
-		privateChan <- &user.PrivateMessage{
-			Content: errMess,
-			Conn:    conn,
-		}
+		u.Channel <- errMess
 
 		return
 	}
@@ -173,14 +173,14 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 		var p []byte
 		_, p, err = conn.ReadMessage()
 		if err != nil {
-			writeErrMessage(conn, err)
+			writeErrMessage(u.Channel, err)
 			return
 		}
 
 		var message []byte
 		message, err = generateMessage(u.Name, p)
 		if err != nil {
-			writeErrMessage(conn, err)
+			writeErrMessage(u.Channel, err)
 
 			return
 		}

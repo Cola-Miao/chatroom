@@ -44,3 +44,62 @@
 2023/09/21 11:03:25 viper.go:26: Configuration read successful
 2023/09/21 11:03:25 mysql.go:37: Mysql connection successful
 2023/09/21 11:03:25 main.go:22: Server running...
+2023/09/21 15:49:16 log.go:34: Log initialization successful
+2023/09/21 15:49:16 viper.go:26: Configuration read successful
+2023/09/21 15:49:16 mysql.go:37: Mysql connection successful
+2023/09/21 15:49:16 main.go:22: Server running...
+2023/09/21 15:54:57 log.go:34: Log initialization successful
+2023/09/21 15:54:57 viper.go:26: Configuration read successful
+2023/09/21 15:54:57 main.go:14: invalid field found for struct server/user.Info's field Conn: define a valid foreign key for relations or implement the Valuer/Scanner interface
+2023/09/21 15:55:17 log.go:34: Log initialization successful
+2023/09/21 15:55:17 viper.go:26: Configuration read successful
+2023/09/21 15:55:17 mysql.go:37: Mysql connection successful
+2023/09/21 15:55:17 main.go:22: Server running...
+2023/09/21 16:00:56 log.go:34: Log initialization successful
+2023/09/21 16:00:56 viper.go:26: Configuration read successful
+2023/09/21 16:00:56 mysql.go:37: Mysql connection successful
+2023/09/21 16:00:56 main.go:22: Server running...
+2023/09/21 16:01:54 log.go:34: Log initialization successful
+2023/09/21 16:01:54 viper.go:26: Configuration read successful
+2023/09/21 16:01:54 mysql.go:37: Mysql connection successful
+2023/09/21 16:01:54 main.go:22: Server running...
+2023/09/21 16:10:15 log.go:34: Log initialization successful
+2023/09/21 16:10:15 viper.go:26: Configuration read successful
+2023/09/21 16:10:15 mysql.go:37: Mysql connection successful
+2023/09/21 16:10:15 main.go:22: Server running...
+2023/09/21 16:14:43 log.go:34: Log initialization successful
+2023/09/21 16:14:43 viper.go:26: Configuration read successful
+2023/09/21 16:14:43 mysql.go:37: Mysql connection successful
+2023/09/21 16:14:43 main.go:22: Server running...
+2023/09/21 16:17:11 log.go:34: Log initialization successful
+2023/09/21 16:17:11 viper.go:26: Configuration read successful
+2023/09/21 16:17:11 mysql.go:37: Mysql connection successful
+2023/09/21 16:17:11 main.go:22: Server running...
+2023/09/21 16:23:28 log.go:34: Log initialization successful
+2023/09/21 16:23:28 viper.go:26: Configuration read successful
+2023/09/21 16:23:28 mysql.go:37: Mysql connection successful
+2023/09/21 16:23:28 main.go:22: Server running...
+2023/09/21 16:24:41 log.go:34: Log initialization successful
+2023/09/21 16:24:41 viper.go:26: Configuration read successful
+2023/09/21 16:24:41 mysql.go:37: Mysql connection successful
+2023/09/21 16:24:41 main.go:22: Server running...
+2023/09/21 16:26:20 log.go:34: Log initialization successful
+2023/09/21 16:26:20 viper.go:26: Configuration read successful
+2023/09/21 16:26:20 mysql.go:37: Mysql connection successful
+2023/09/21 16:26:20 main.go:22: Server running...
+2023/09/21 16:26:40 log.go:34: Log initialization successful
+2023/09/21 16:26:40 viper.go:26: Configuration read successful
+2023/09/21 16:26:40 mysql.go:37: Mysql connection successful
+2023/09/21 16:26:40 main.go:22: Server running...
+2023/09/21 16:28:29 log.go:34: Log initialization successful
+2023/09/21 16:28:29 viper.go:26: Configuration read successful
+2023/09/21 16:28:29 mysql.go:37: Mysql connection successful
+2023/09/21 16:28:29 main.go:22: Server running...
+2023/09/21 16:33:48 log.go:34: Log initialization successful
+2023/09/21 16:33:48 viper.go:26: Configuration read successful
+2023/09/21 16:33:48 mysql.go:37: Mysql connection successful
+2023/09/21 16:33:48 main.go:22: Server running...
+2023/09/21 16:35:54 log.go:34: Log initialization successful
+2023/09/21 16:35:54 viper.go:26: Configuration read successful
+2023/09/21 16:35:55 mysql.go:37: Mysql connection successful
+2023/09/21 16:35:55 main.go:22: Server running...
