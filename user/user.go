@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
 	"time"
 )
@@ -12,7 +13,12 @@ type Info struct {
 }
 
 type Message struct {
-	Owner   string
+	Owner   string    `json:"owner,omitempty"`
+	Content []byte    `json:"content,omitempty"`
+	Time    time.Time `json:"time"`
+}
+
+type PrivateMessage struct {
 	Content []byte
-	Time    time.Time
+	Conn    *websocket.Conn
 }

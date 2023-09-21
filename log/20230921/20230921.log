@@ -1,0 +1,46 @@
+2023/09/21 09:47:37 log.go:34: Log initialization successful
+2023/09/21 09:47:37 viper.go:26: Configuration read successful
+2023/09/21 09:47:37 mysql.go:37: Mysql connection successful
+2023/09/21 09:47:37 main.go:20: Server running...
+2023/09/21 09:49:49 log.go:34: Log initialization successful
+2023/09/21 09:49:49 viper.go:26: Configuration read successful
+2023/09/21 09:49:49 mysql.go:37: Mysql connection successful
+2023/09/21 09:49:49 main.go:20: Server running...
+2023/09/21 09:49:49 main.go:21: listen tcp :5912: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+2023/09/21 09:52:09 ws.go:113: write tcp [::1]:5912->[::1]:14303: wsasend: An existing connection was forcibly closed by the remote host.
+2023/09/21 09:58:14 log.go:34: Log initialization successful
+2023/09/21 09:58:14 viper.go:26: Configuration read successful
+2023/09/21 09:58:14 mysql.go:37: Mysql connection successful
+2023/09/21 09:58:14 main.go:22: Server running...
+2023/09/21 10:03:19 log.go:34: Log initialization successful
+2023/09/21 10:03:19 viper.go:26: Configuration read successful
+2023/09/21 10:03:19 mysql.go:37: Mysql connection successful
+2023/09/21 10:03:19 main.go:22: Server running...
+2023/09/21 10:30:13 log.go:34: Log initialization successful
+2023/09/21 10:30:13 viper.go:26: Configuration read successful
+2023/09/21 10:30:13 mysql.go:37: Mysql connection successful
+2023/09/21 10:30:13 main.go:22: Server running...
+2023/09/21 10:31:40 log.go:34: Log initialization successful
+2023/09/21 10:31:40 viper.go:26: Configuration read successful
+2023/09/21 10:31:40 mysql.go:37: Mysql connection successful
+2023/09/21 10:31:40 main.go:22: Server running...
+2023/09/21 10:37:25 log.go:34: Log initialization successful
+2023/09/21 10:37:25 viper.go:26: Configuration read successful
+2023/09/21 10:37:25 mysql.go:37: Mysql connection successful
+2023/09/21 10:37:25 main.go:22: Server running...
+2023/09/21 10:51:01 log.go:34: Log initialization successful
+2023/09/21 10:51:01 viper.go:26: Configuration read successful
+2023/09/21 10:51:01 mysql.go:37: Mysql connection successful
+2023/09/21 10:51:01 main.go:22: Server running...
+2023/09/21 10:56:23 log.go:34: Log initialization successful
+2023/09/21 10:56:23 viper.go:26: Configuration read successful
+2023/09/21 10:56:23 mysql.go:37: Mysql connection successful
+2023/09/21 10:56:23 main.go:22: Server running...
+2023/09/21 10:59:28 log.go:34: Log initialization successful
+2023/09/21 10:59:28 viper.go:26: Configuration read successful
+2023/09/21 10:59:28 mysql.go:37: Mysql connection successful
+2023/09/21 10:59:28 main.go:22: Server running...
+2023/09/21 11:03:25 log.go:34: Log initialization successful
+2023/09/21 11:03:25 viper.go:26: Configuration read successful
+2023/09/21 11:03:25 mysql.go:37: Mysql connection successful
+2023/09/21 11:03:25 main.go:22: Server running...

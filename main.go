@@ -5,6 +5,7 @@ import (
 	"server/global"
 	"server/initialize"
 	"server/router"
+	"server/utils"
 	ws "server/websocket"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	http.HandleFunc("/health", router.HealthHF)
 	http.HandleFunc("/ws", ws.WebsocketHF)
 
+	utils.ASCServer()
 	global.Log.Println("Server running...")
 	global.Log.Fatalln(http.ListenAndServe(":5912", nil))
 }

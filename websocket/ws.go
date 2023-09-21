@@ -8,6 +8,7 @@ import (
 	"server/dao"
 	"server/global"
 	"server/user"
+	"strings"
 	"time"
 )
 
@@ -15,8 +16,12 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  256,
 	WriteBufferSize: 256,
 }
-var users = make(map[string]*websocket.Conn)
-var messageChan = make(chan []byte, 8)
+
+var (
+	users       = make(map[string]*websocket.Conn)
+	messageChan = make(chan []byte, 8)
+	privateChan = make(chan *user.PrivateMessage, 8)
+)
 
 func auth(c *websocket.Conn) (u *user.Info, err error) {
 	u = new(user.Info)
@@ -33,20 +38,51 @@ func auth(c *websocket.Conn) (u *user.Info, err error) {
 	if err = dao.UserAuth(u); err != nil {
 		return
 	}
+	if err = authSuccess(u, c); err != nil {
+		return
+	}
 
+	return
+}
+
+func authSuccess(u *user.Info, c *websocket.Conn) (err error) {
 	loginMess, err := systemMessage([]byte("Login successful"))
 	if err != nil {
-		global.Log.Println(err)
+		return
 	}
 	joinMess, err := systemMessage([]byte(u.Name + " joined the chatroom"))
 	if err != nil {
-		global.Log.Println(err)
+		return
 	}
 	messageChan <- joinMess
-	if err = c.WriteMessage(websocket.TextMessage, loginMess); err != nil {
-		global.Log.Println(err)
+	privateChan <- &user.PrivateMessage{
+		Content: loginMess,
+		Conn:    c,
 	}
 	users[u.Name] = c
+
+	ul := usersList()
+	listMess, err := systemMessage(ul)
+	if err != nil {
+		return
+	}
+	privateChan <- &user.PrivateMessage{
+		Content: listMess,
+		Conn:    c,
+	}
+
+	return
+}
+
+func usersList() (content []byte) {
+	var builder strings.Builder
+	builder.Write([]byte("UsersList: "))
+	for u := range users {
+		builder.Write([]byte(u))
+		builder.WriteByte(',')
+	}
+
+	content = []byte(builder.String())
 
 	return
 }
@@ -78,8 +114,9 @@ func writeErrMessage(conn *websocket.Conn, err error) {
 	if err != nil {
 		global.Log.Println(errMess)
 	}
-	if err = conn.WriteMessage(websocket.TextMessage, errMess); err != nil {
-		global.Log.Println(err)
+	privateChan <- &user.PrivateMessage{
+		Content: errMess,
+		Conn:    conn,
 	}
 
 	return
@@ -92,6 +129,8 @@ func Broadcast() {
 			for _, conn := range users {
 				conn.WriteMessage(websocket.TextMessage, message)
 			}
+		case privateMessage := <-privateChan:
+			privateMessage.Conn.WriteMessage(websocket.TextMessage, privateMessage.Content)
 		}
 	}
 }
@@ -106,12 +145,14 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 
 	u, err := auth(conn)
 	if err != nil {
-		errMess, err := systemMessage([]byte(err.Error()))
+		var errMess []byte
+		errMess, err = systemMessage([]byte(err.Error()))
 		if err != nil {
 			global.Log.Println(errMess)
 		}
-		if err = conn.WriteMessage(websocket.TextMessage, errMess); err != nil {
-			global.Log.Println(err)
+		privateChan <- &user.PrivateMessage{
+			Content: errMess,
+			Conn:    conn,
 		}
 
 		return
@@ -119,7 +160,8 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 
 	defer func() {
 		delete(users, u.Name)
-		leaveMess, err := systemMessage([]byte(u.Name + " leaves the chat room"))
+		var leaveMess []byte
+		leaveMess, err = systemMessage([]byte(u.Name + " leaves the chat room"))
 		if err != nil {
 			global.Log.Println(err)
 			return
@@ -128,13 +170,15 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	for {
-		_, p, err := conn.ReadMessage()
+		var p []byte
+		_, p, err = conn.ReadMessage()
 		if err != nil {
 			writeErrMessage(conn, err)
 			return
 		}
 
-		message, err := generateMessage(u.Name, p)
+		var message []byte
+		message, err = generateMessage(u.Name, p)
 		if err != nil {
 			writeErrMessage(conn, err)
 
