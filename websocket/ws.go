@@ -8,6 +8,7 @@ import (
 	"server/dao"
 	"server/global"
 	"server/user"
+	"server/utils"
 	"strings"
 	"time"
 )
@@ -22,7 +23,7 @@ var (
 	messageChan = make(chan []byte, 8)
 )
 
-func auth(c *websocket.Conn) (u *user.Info, err error) {
+func userAuth(c *websocket.Conn) (u *user.Info, err error) {
 	u = new(user.Info)
 	_, userJSON, err := c.ReadMessage()
 	if err != nil {
@@ -92,17 +93,6 @@ func systemMessage(content []byte) (messJSON []byte, err error) {
 	return
 }
 
-func generateMessage(owner string, content []byte) (messJSON []byte, err error) {
-	mess := &user.Message{
-		Owner:   owner,
-		Content: content,
-		Time:    time.Now(),
-	}
-	messJSON, err = json.Marshal(mess)
-
-	return
-}
-
 func writeErrMessage(channel chan []byte, err error) {
 	errMess, err := systemMessage([]byte(err.Error()))
 	if err != nil {
@@ -146,7 +136,7 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 	}()
 
-	u, err := auth(conn)
+	u, err := userAuth(conn)
 	if err != nil {
 		var errMess []byte
 		errMess, err = systemMessage([]byte(err.Error()))
@@ -159,31 +149,42 @@ func WebsocketHF(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		delete(users, u.Name)
-		var leaveMess []byte
-		leaveMess, err = systemMessage([]byte(u.Name + " leaves the chat room"))
-		if err != nil {
+		if err = userLeave(u); err != nil {
 			global.Log.Println(err)
-			return
 		}
-		messageChan <- leaveMess
 	}()
 
 	for {
-		var p []byte
-		_, p, err = conn.ReadMessage()
-		if err != nil {
-			writeErrMessage(u.Channel, err)
-			return
-		}
-
 		var message []byte
-		message, err = generateMessage(u.Name, p)
+		message, err = readMessage(u, conn)
 		if err != nil {
 			writeErrMessage(u.Channel, err)
-
 			return
 		}
 		messageChan <- message
 	}
+}
+
+func userLeave(u *user.Info) (err error) {
+	delete(users, u.Name)
+	var leaveMess []byte
+	leaveMess, err = systemMessage([]byte(u.Name + " leaves the chat room"))
+	if err != nil {
+		return
+	}
+	messageChan <- leaveMess
+
+	return
+}
+
+func readMessage(u *user.Info, c *websocket.Conn) (message []byte, err error) {
+	var p []byte
+	_, p, err = c.ReadMessage()
+	if err != nil {
+		writeErrMessage(u.Channel, err)
+		return
+	}
+	message, err = utils.GenerateMessage(u.Name, p)
+
+	return
 }

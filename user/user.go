@@ -29,5 +29,5 @@ func UnmarshalUser(userJSON []byte, u *Info, c *websocket.Conn) (err error) {
 	u.Channel = make(chan []byte, 1)
 	u.Conn = c
 
-	return err
+	return
 }
